@@ -48,6 +48,167 @@
 
   a{ color:inherit; }
 
+  html{ scroll-behavior:smooth; }
+
+  /* ===== SCROLL PROGRESS BAR ===== */
+  .progress-bar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg, var(--wine), var(--gold));
+    z-index:1000;
+    transition:width 0.08s linear;
+  }
+
+  /* ===== NAV ===== */
+  .site-nav{
+    position:sticky; top:0; z-index:900;
+    background:rgba(253,250,255,0.82);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:960px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1rem 1.5rem;
+  }
+  .nav-brand{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600; font-size:1.35rem;
+    color:var(--wine);
+    text-decoration:none;
+    letter-spacing:0.02em;
+  }
+  .nav-links{
+    display:flex; align-items:center; gap:2rem;
+    list-style:none;
+  }
+  .nav-links a{
+    text-decoration:none;
+    font-size:0.8rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    padding-bottom:4px;
+    border-bottom:2px solid transparent;
+    transition:color 0.2s ease, border-color 0.2s ease;
+  }
+  .nav-links a:hover, .nav-links a.active{
+    color:var(--wine);
+    border-color:var(--gold);
+  }
+  .nav-links a.nav-cta{
+    background:var(--wine);
+    color:#fff;
+    padding:0.5rem 1.1rem;
+    border-radius:999px;
+    border:none;
+  }
+  .nav-links a.nav-cta:hover{ background:var(--gold-deep); color:var(--ink); }
+
+  .nav-toggle{
+    display:none;
+    flex-direction:column;
+    gap:5px;
+    background:none; border:none; cursor:pointer;
+    padding:0.4rem;
+  }
+  .nav-toggle span{
+    width:22px; height:2px; background:var(--ink);
+    transition:transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  @media (max-width:720px){
+    .nav-toggle{ display:flex; }
+    .nav-links{
+      position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; align-items:flex-start;
+      background:var(--paper);
+      border-bottom:1px solid var(--line);
+      padding:1.25rem 1.5rem;
+      gap:1.1rem;
+      max-height:0;
+      overflow:hidden;
+      transition:max-height 0.3s ease, padding 0.3s ease;
+    }
+    .nav-links.open{ max-height:320px; padding:1.25rem 1.5rem; }
+    .nav-links a.nav-cta{ margin-top:0.25rem; }
+  }
+
+  /* ===== COUNTDOWN ===== */
+  .countdown{
+    display:flex;
+    gap:1rem;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:2.75rem;
+  }
+  .count-tile{
+    background:linear-gradient(160deg, var(--wine), #451270);
+    color:#fff;
+    border-radius:14px;
+    padding:1rem 1.1rem;
+    min-width:78px;
+    text-align:center;
+    box-shadow:0 12px 26px -12px rgba(107,31,160,0.55);
+    border:2px solid var(--gold);
+    position:relative;
+    overflow:hidden;
+  }
+  .count-tile::after{
+    content:"";
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 50% -20%, rgba(232,185,35,0.35), transparent 60%);
+  }
+  .count-num{
+    display:block;
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:2.1rem;
+    line-height:1;
+    color:var(--gold);
+    position:relative;
+  }
+  .count-label{
+    display:block;
+    font-size:0.65rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    margin-top:0.35rem;
+    color:#EADFF5;
+    position:relative;
+  }
+
+  /* ===== SPARKLES ===== */
+  .sparkles{
+    position:absolute; inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:0;
+  }
+  .sparkle{
+    position:absolute;
+    width:5px; height:5px;
+    border-radius:50%;
+    background:var(--gold);
+    opacity:0;
+    animation:sparkle-twinkle 3.2s ease-in-out infinite;
+  }
+  @keyframes sparkle-twinkle{
+    0%, 100%{ opacity:0; transform:scale(0.6); }
+    50%{ opacity:0.9; transform:scale(1.3); }
+  }
+
+  /* ===== SCROLL REVEAL ===== */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.in-view{
+    opacity:1;
+    transform:translateY(0);
+  }
+
   /* ===== ORNAMENT (signature element) ===== */
   .ornament{
     display:flex; align-items:center; justify-content:center; gap:0.9rem;
@@ -205,6 +366,11 @@
     padding:1.75rem;
     text-align:left;
     position:relative;
+    transition:transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .stay-card:hover{
+    transform:translateY(-6px) scale(1.015);
+    box-shadow:0 20px 34px -18px rgba(107,31,160,0.35);
   }
   .stay-card::before{
     content:"";
@@ -324,13 +490,32 @@
   footer .display{ font-size:1.75rem; color:var(--ink); margin-bottom:0.6rem; font-weight:400; }
 
   @media (prefers-reduced-motion: reduce){
-    *{ scroll-behavior:auto !important; }
+    *{ scroll-behavior:auto !important; animation:none !important; transition:none !important; }
+    .reveal{ opacity:1; transform:none; }
   }
 </style>
 </head>
 <body>
 
-  <section class="hero">
+  <div class="progress-bar" id="progressBar"></div>
+
+  <nav class="site-nav" id="siteNav">
+    <div class="nav-inner">
+      <a href="#home" class="nav-brand">Adelakun</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" data-nav="home">Home</a></li>
+        <li><a href="#welcome" data-nav="welcome">Welcome</a></li>
+        <li><a href="#details" data-nav="details">Details</a></li>
+        <li><a href="#stay" data-nav="stay">Stay</a></li>
+        <li><a href="#rsvp" class="nav-cta" data-nav="rsvp">RSVP</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="hero" id="home">
     <div class="hero-content">
       <span class="eyebrow">You Are Warmly Invited</span>
       <h1>The Adelakun Family<br><em>Naming Ceremony</em></h1>
@@ -345,13 +530,21 @@
         <div><span class="eyebrow">Time</span><span class="val">12:00 PM</span></div>
         <div><span class="eyebrow">Venue</span><span class="val">Scarborough</span></div>
       </div>
+
+      <div class="countdown" id="countdown" data-target="2026-10-24T12:00:00">
+        <div class="count-tile"><span class="count-num" id="cdDays">00</span><span class="count-label">Days</span></div>
+        <div class="count-tile"><span class="count-num" id="cdHours">00</span><span class="count-label">Hours</span></div>
+        <div class="count-tile"><span class="count-num" id="cdMins">00</span><span class="count-label">Mins</span></div>
+        <div class="count-tile"><span class="count-num" id="cdSecs">00</span><span class="count-label">Secs</span></div>
+      </div>
     </div>
+    <div class="sparkles" id="sparkles"></div>
     <div class="scroll-cue">Scroll</div>
   </section>
 
-  <section class="welcome">
+  <section class="welcome" id="welcome">
     <div class="wrap">
-      <div class="welcome-inner">
+      <div class="welcome-inner reveal">
         <p>We welcomed a new addition to our family, and we would love for you to join us as we celebrate and formally give our baby their name.</p>
         <p>Your presence would mean the world to us.</p>
         <span class="signature">The Adelakun Family</span>
@@ -359,9 +552,9 @@
     </div>
   </section>
 
-  <section class="details">
+  <section class="details" id="details">
     <div class="wrap">
-      <div class="detail-row">
+      <div class="detail-row reveal">
         <div class="detail-item">
           <span class="eyebrow">When</span>
           <div class="val">Sat, 24 October</div>
@@ -374,7 +567,7 @@
         </div>
       </div>
 
-      <div class="map-embed">
+      <div class="map-embed reveal">
         <iframe
           src="https://www.google.com/maps?q=Scarborough+Sports+Village,+Off+Ashburn+Rd,+Valley+Rd,+Scarborough+YO11+2JW,+UK&output=embed"
           width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy"
@@ -387,7 +580,7 @@
     </div>
   </section>
 
-  <section class="stay">
+  <section class="stay" id="stay">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Travelling In</span>
@@ -395,13 +588,13 @@
         <p>A couple of nearby options if you'd like to make a night of it.</p>
       </div>
       <div class="stay-grid">
-        <div class="stay-card">
+        <div class="stay-card reveal">
           <span class="dist">~0.5 miles from venue</span>
           <h3>The Cavendish Bed and Breakfast</h3>
           <p>53 Esplanade Rd, Scarborough YO11 2AT. Highly rated, traditional B&amp;B, warm hosts and a short drive or taxi ride to the venue.</p>
           <a class="book" href="https://www.google.com/maps/place/?q=place_id:ChIJF8Qzse9Hf0gRviwc4csHeSY" target="_blank" rel="noopener">View on Map →</a>
         </div>
-        <div class="stay-card">
+        <div class="stay-card reveal">
           <span class="dist">~1 mile from venue</span>
           <h3>Premier Inn Scarborough (South Bay)</h3>
           <p>Falconers Rd, Scarborough YO11 2EN. Reliable chain hotel, family rooms available, easy booking online.</p>
@@ -412,7 +605,7 @@
     </div>
   </section>
 
-  <section class="rsvp">
+  <section class="rsvp" id="rsvp">
     <div class="wrap">
       <div class="section-head">
         <span class="eyebrow">Kindly Respond</span>
@@ -420,7 +613,7 @@
         <p>Please let us know by [RSVP deadline] so we can plan accordingly.</p>
       </div>
 
-      <form class="rsvp-form" id="rsvpForm" name="rsvp" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <form class="rsvp-form reveal" id="rsvpForm" name="rsvp" method="POST" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="rsvp">
         <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
         <div class="row2">
@@ -463,6 +656,131 @@
   </footer>
 
 <script>
+  /* ---- Scroll progress bar ---- */
+  const progressBar = document.getElementById('progressBar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progressBar.style.width = scrolled + '%';
+  }
+  document.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  /* ---- Mobile nav toggle ---- */
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+
+  /* ---- Active nav link on scroll ---- */
+  const navAnchors = document.querySelectorAll('.nav-links a[data-nav]');
+  const sections = ['home','welcome','details','stay','rsvp']
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        navAnchors.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.nav-links a[data-nav="${entry.target.id}"]`);
+        if(active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-45% 0px -45% 0px' });
+  sections.forEach(s => navObserver.observe(s));
+
+  /* ---- Countdown timer ---- */
+  const countdownEl = document.getElementById('countdown');
+  if(countdownEl){
+    const target = new Date(countdownEl.dataset.target).getTime();
+    const dEl = document.getElementById('cdDays');
+    const hEl = document.getElementById('cdHours');
+    const mEl = document.getElementById('cdMins');
+    const sEl = document.getElementById('cdSecs');
+
+    function pad(n){ return String(n).padStart(2,'0'); }
+
+    function tick(){
+      const now = Date.now();
+      let diff = target - now;
+      if(diff < 0) diff = 0;
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      dEl.textContent = pad(days);
+      hEl.textContent = pad(hours);
+      mEl.textContent = pad(mins);
+      sEl.textContent = pad(secs);
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  /* ---- Sparkles ---- */
+  const sparkleContainer = document.getElementById('sparkles');
+  if(sparkleContainer){
+    const count = 24;
+    for(let i = 0; i < count; i++){
+      const s = document.createElement('span');
+      s.className = 'sparkle';
+      s.style.left = Math.random() * 100 + '%';
+      s.style.top = Math.random() * 100 + '%';
+      s.style.animationDelay = (Math.random() * 3.2) + 's';
+      s.style.animationDuration = (2.4 + Math.random() * 2.2) + 's';
+      sparkleContainer.appendChild(s);
+    }
+  }
+
+  /* ---- Scroll reveal ---- */
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if(entry.isIntersecting){
+        setTimeout(() => entry.target.classList.add('in-view'), i * 80);
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  /* ---- Confetti burst ---- */
+  function launchConfetti(){
+    const colors = ['#E8B923', '#6B1FA0', '#B8860B', '#7A5FA6'];
+    const confettiCount = 60;
+    for(let i = 0; i < confettiCount; i++){
+      const piece = document.createElement('div');
+      const size = 6 + Math.random() * 6;
+      piece.style.position = 'fixed';
+      piece.style.top = '-20px';
+      piece.style.left = Math.random() * 100 + 'vw';
+      piece.style.width = size + 'px';
+      piece.style.height = size * 0.6 + 'px';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.opacity = '0.9';
+      piece.style.borderRadius = '2px';
+      piece.style.zIndex = '2000';
+      piece.style.pointerEvents = 'none';
+      piece.style.transform = `rotate(${Math.random()*360}deg)`;
+      document.body.appendChild(piece);
+
+      const duration = 2400 + Math.random() * 1800;
+      const drift = (Math.random() - 0.5) * 200;
+
+      piece.animate([
+        { transform: `translate(0, 0) rotate(0deg)`, opacity: 0.9 },
+        { transform: `translate(${drift}px, 100vh) rotate(${360 + Math.random()*360}deg)`, opacity: 0 }
+      ], { duration, easing: 'cubic-bezier(0.25,0.46,0.45,0.94)' });
+
+      setTimeout(() => piece.remove(), duration);
+    }
+  }
+
   const form = document.getElementById('rsvpForm');
   const msg = document.getElementById('formMsg');
   const btn = document.getElementById('submitBtn');
@@ -496,6 +814,7 @@
           ? "Thank you — we look forward to celebrating with you."
           : "Thank you for letting us know. You'll be missed.";
         msg.classList.add('show','ok');
+        if(attending === 'Yes') launchConfetti();
         form.reset();
         document.getElementById('guests').value = 1;
       } else {
