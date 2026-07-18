@@ -289,15 +289,6 @@
   .form-msg.ok{ color:var(--sage); }
   .form-msg.err{ color:#B0503C; }
 
-  .rsvp-count{
-    text-align:center;
-    margin-top:2rem;
-    font-size:0.85rem;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    color:var(--ink-soft);
-  }
-
   /* ===== FOOTER ===== */
   footer{
     background:var(--paper);
@@ -397,15 +388,17 @@
         <p>Please let us know by [RSVP deadline] so we can plan accordingly.</p>
       </div>
 
-      <form class="rsvp-form" id="rsvpForm">
+      <form class="rsvp-form" id="rsvpForm" name="rsvp" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="rsvp">
+        <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
         <div class="row2">
           <div class="field">
             <label for="name">Full Name</label>
-            <input type="text" id="name" required placeholder="Your name">
+            <input type="text" id="name" name="name" required placeholder="Your name">
           </div>
           <div class="field">
             <label for="attending">Attending?</label>
-            <select id="attending" required>
+            <select id="attending" name="attending" required>
               <option value="">Select</option>
               <option value="Yes">Yes, with pleasure</option>
               <option value="No">Sadly, no</option>
@@ -415,22 +408,20 @@
         <div class="row2">
           <div class="field">
             <label for="guests">Number of Guests (incl. you)</label>
-            <input type="number" id="guests" min="1" max="10" value="1" required>
+            <input type="number" id="guests" name="guests" min="1" max="10" value="1" required>
           </div>
           <div class="field">
             <label for="phone">Phone (optional)</label>
-            <input type="tel" id="phone" placeholder="For updates">
+            <input type="tel" id="phone" name="phone" placeholder="For updates">
           </div>
         </div>
         <div class="field">
           <label for="message">Message for the family (optional)</label>
-          <textarea id="message" placeholder="Leave a note or well-wish..."></textarea>
+          <textarea id="message" name="message" placeholder="Leave a note or well-wish..."></textarea>
         </div>
         <button type="submit" class="btn" id="submitBtn">Send RSVP</button>
         <div class="form-msg" id="formMsg"></div>
       </form>
-
-      <div class="rsvp-count" id="rsvpCount"></div>
     </div>
   </section>
 
@@ -443,16 +434,11 @@
   const form = document.getElementById('rsvpForm');
   const msg = document.getElementById('formMsg');
   const btn = document.getElementById('submitBtn');
-  const countEl = document.getElementById('rsvpCount');
 
-  async function loadCount(){
-    try{
-      const list = await window.storage.list('rsvp:', true);
-      const n = list && list.keys ? list.keys.length : 0;
-      countEl.textContent = n > 0 ? `${n} ${n === 1 ? 'reply' : 'replies'} so far` : '';
-    }catch(e){
-      countEl.textContent = '';
-    }
+  function encode(data) {
+    return Object.keys(data)
+      .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+      .join("&");
   }
 
   form.addEventListener('submit', async (e) => {
@@ -461,29 +447,27 @@
     btn.textContent = 'Sending...';
     msg.className = 'form-msg';
 
-    const entry = {
-      name: document.getElementById('name').value.trim(),
-      attending: document.getElementById('attending').value,
-      guests: document.getElementById('guests').value,
-      phone: document.getElementById('phone').value.trim(),
-      message: document.getElementById('message').value.trim(),
-      submittedAt: new Date().toISOString()
-    };
-
-    const key = 'rsvp:' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+    const formData = new FormData(form);
+    const attending = formData.get('attending');
+    const payload = {};
+    formData.forEach((value, key) => { payload[key] = value; });
 
     try{
-      const result = await window.storage.set(key, JSON.stringify(entry), true);
-      if(result){
-        msg.textContent = entry.attending === 'Yes'
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encode(payload)
+      });
+
+      if(response.ok){
+        msg.textContent = attending === 'Yes'
           ? "Thank you — we look forward to celebrating with you."
           : "Thank you for letting us know. You'll be missed.";
         msg.classList.add('show','ok');
         form.reset();
         document.getElementById('guests').value = 1;
-        loadCount();
       } else {
-        throw new Error('no result');
+        throw new Error('submission failed');
       }
     }catch(err){
       msg.textContent = "Something went wrong sending your RSVP. Please try again.";
@@ -493,8 +477,6 @@
       btn.textContent = 'Send RSVP';
     }
   });
-
-  loadCount();
 </script>
 
 </body>
