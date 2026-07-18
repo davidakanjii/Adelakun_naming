@@ -166,6 +166,29 @@
   .detail-item .val{ font-family:'Cormorant Garamond', serif; font-size:1.35rem; color:var(--ink); }
   .detail-item .sub{ font-size:0.9rem; color:var(--ink-soft); margin-top:0.3rem; }
 
+  .map-embed{
+    margin-top:2.5rem;
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    max-width:640px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .map-embed iframe{ display:block; width:100%; }
+  .map-actions{ text-align:center; margin-top:1.25rem; }
+  .directions-link{
+    display:inline-block;
+    font-size:0.8rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--wine);
+    text-decoration:none;
+    border-bottom:1px solid var(--wine);
+    padding-bottom:0.15rem;
+  }
+  .directions-link:hover{ color:var(--gold-deep); border-color:var(--gold-deep); }
+
   /* ===== STAY ===== */
   .stay{ background:var(--ivory); }
   .stay-grid{
@@ -318,9 +341,9 @@
       </div>
       <p class="sub">Join us as we give thanks for our little one and celebrate the giving of their name.</p>
       <div class="hero-date">
-        <div><span class="eyebrow">Date</span><span class="val">[Day, Month Date, Year]</span></div>
-        <div><span class="eyebrow">Time</span><span class="val">[Time]</span></div>
-        <div><span class="eyebrow">Venue</span><span class="val">[City, UK]</span></div>
+        <div><span class="eyebrow">Date</span><span class="val">24 October 2026</span></div>
+        <div><span class="eyebrow">Time</span><span class="val">12:00 PM</span></div>
+        <div><span class="eyebrow">Venue</span><span class="val">Scarborough</span></div>
       </div>
     </div>
     <div class="scroll-cue">Scroll</div>
@@ -329,7 +352,7 @@
   <section class="welcome">
     <div class="wrap">
       <div class="welcome-inner">
-        <p>On [Date], we welcomed a new addition to our family. We would love for you to join us as we celebrate and formally give our baby their name.</p>
+        <p>We welcomed a new addition to our family, and we would love for you to join us as we celebrate and formally give our baby their name.</p>
         <p>Your presence would mean the world to us.</p>
         <span class="signature">The Adelakun Family</span>
       </div>
@@ -341,14 +364,25 @@
       <div class="detail-row">
         <div class="detail-item">
           <span class="eyebrow">When</span>
-          <div class="val">[Day, Date Month]</div>
-          <div class="sub">[Time]</div>
+          <div class="val">Sat, 24 October</div>
+          <div class="sub">12:00 PM</div>
         </div>
         <div class="detail-item">
           <span class="eyebrow">Where</span>
-          <div class="val">[Venue Name]</div>
-          <div class="sub">[Full Address, UK]</div>
+          <div class="val">Everyone Active Function Room</div>
+          <div class="sub">Scarborough Sports Village, Off Ashburn Rd, Valley Rd, Scarborough YO11 2JW</div>
         </div>
+      </div>
+
+      <div class="map-embed">
+        <iframe
+          src="https://www.google.com/maps?q=Scarborough+Sports+Village,+Off+Ashburn+Rd,+Valley+Rd,+Scarborough+YO11+2JW,+UK&output=embed"
+          width="100%" height="320" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+      <div class="map-actions">
+        <a class="directions-link" href="https://www.google.com/maps/dir/?api=1&destination=Scarborough+Sports+Village,+Off+Ashburn+Rd,+Valley+Rd,+Scarborough+YO11+2JW,+UK" target="_blank" rel="noopener">Get Directions →</a>
       </div>
     </div>
   </section>
@@ -358,22 +392,20 @@
       <div class="section-head">
         <span class="eyebrow">Travelling In</span>
         <h2>Where to Stay</h2>
-        <p>A few nearby options if you'd like to make a night of it. We've arranged a small discount at each.</p>
+        <p>A couple of nearby options if you'd like to make a night of it.</p>
       </div>
       <div class="stay-grid">
         <div class="stay-card">
-          <span class="dist">[0.5 miles from venue]</span>
-          <h3>[Hotel Name One]</h3>
-          <p>[Brief description — e.g. boutique hotel, easy parking, walking distance to venue.]</p>
-          <span class="code">Code: [BLOCK CODE]</span><br>
-          <a class="book" href="#" target="_blank" rel="noopener">Book Now →</a>
+          <span class="dist">~0.5 miles from venue</span>
+          <h3>The Cavendish Bed and Breakfast</h3>
+          <p>53 Esplanade Rd, Scarborough YO11 2AT. Highly rated, traditional B&amp;B, warm hosts and a short drive or taxi ride to the venue.</p>
+          <a class="book" href="https://www.google.com/maps/place/?q=place_id:ChIJF8Qzse9Hf0gRviwc4csHeSY" target="_blank" rel="noopener">View on Map →</a>
         </div>
         <div class="stay-card">
-          <span class="dist">[1.2 miles from venue]</span>
-          <h3>[Hotel Name Two]</h3>
-          <p>[Brief description — e.g. budget-friendly, family rooms available.]</p>
-          <span class="code">Code: [BLOCK CODE]</span><br>
-          <a class="book" href="#" target="_blank" rel="noopener">Book Now →</a>
+          <span class="dist">~1 mile from venue</span>
+          <h3>Premier Inn Scarborough (South Bay)</h3>
+          <p>Falconers Rd, Scarborough YO11 2EN. Reliable chain hotel, family rooms available, easy booking online.</p>
+          <a class="book" href="https://www.google.com/maps/place/?q=place_id:ChIJTUH4KZNHf0gRrL5J6dh2qR0" target="_blank" rel="noopener">View on Map →</a>
         </div>
       </div>
       <p class="stay-note">Questions about travel or accommodation? Reach us at [contact email / phone].</p>
