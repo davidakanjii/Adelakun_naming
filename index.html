@@ -350,6 +350,63 @@
   }
   .directions-link:hover{ color:var(--gold-deep); border-color:var(--gold-deep); }
 
+  /* ===== MENU ===== */
+  .menu{ background:var(--paper); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .menu-course{ margin-bottom:3.5rem; }
+  .menu-course:last-child{ margin-bottom:0; }
+  .menu-course-title{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    justify-content:center;
+    margin-bottom:1.75rem;
+  }
+  .menu-course-title h3{
+    font-size:1.5rem;
+    color:var(--wine);
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .menu-course-title .rule{ flex:1; height:1px; background:var(--line); max-width:160px; }
+
+  .menu-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1.25rem;
+  }
+  @media (max-width:760px){ .menu-grid{ grid-template-columns:repeat(2, 1fr); } }
+  @media (max-width:420px){ .menu-grid{ grid-template-columns:1fr; } }
+
+  .menu-item{
+    background:var(--ivory);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:1.5rem 1rem;
+    text-align:center;
+    transition:transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .menu-item:hover{
+    transform:translateY(-5px);
+    border-color:var(--gold);
+    box-shadow:0 16px 28px -16px rgba(107,31,160,0.3);
+  }
+  .menu-icon{
+    width:64px; height:64px;
+    margin:0 auto 0.9rem;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(160deg, var(--wine), #451270);
+    border:2px solid var(--gold);
+    font-size:1.75rem;
+  }
+  .menu-item h4{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:1.05rem;
+    color:var(--ink);
+    line-height:1.3;
+  }
+
   /* ===== STAY ===== */
   .stay{ background:var(--ivory); }
   .stay-grid{
@@ -510,6 +567,7 @@
         <li><a href="#welcome" data-nav="welcome">Welcome</a></li>
         <li><a href="#details" data-nav="details">Details</a></li>
         <li><a href="#stay" data-nav="stay">Stay</a></li>
+        <li><a href="#menu" data-nav="menu">Menu</a></li>
         <li><a href="#rsvp" class="nav-cta" data-nav="rsvp">RSVP</a></li>
       </ul>
     </div>
@@ -605,6 +663,50 @@
     </div>
   </section>
 
+  <section class="menu" id="menu">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">On the Table</span>
+        <h2>Food Menu</h2>
+        <p>A taste of home, made with love — here's what we'll be serving.</p>
+      </div>
+
+      <div class="menu-course reveal">
+        <div class="menu-course-title">
+          <span class="rule"></span><h3>Starters</h3><span class="rule"></span>
+        </div>
+        <div class="menu-grid">
+          <div class="menu-item"><div class="menu-icon">🍢</div><h4>Small Chops</h4></div>
+          <div class="menu-item"><div class="menu-icon">🍲</div><h4>Pepper Soup</h4></div>
+          <div class="menu-item"><div class="menu-icon">🍗</div><h4>Gizdodo</h4></div>
+          <div class="menu-item"><div class="menu-icon">🍟</div><h4>Chicken Wings &amp; Chips</h4></div>
+        </div>
+      </div>
+
+      <div class="menu-course reveal">
+        <div class="menu-course-title">
+          <span class="rule"></span><h3>Main Course</h3><span class="rule"></span>
+        </div>
+        <div class="menu-grid">
+          <div class="menu-item"><div class="menu-icon">🍚</div><h4>Jollof Rice</h4></div>
+          <div class="menu-item"><div class="menu-icon">🍛</div><h4>Fried Rice</h4></div>
+          <div class="menu-item"><div class="menu-icon">🥘</div><h4>Abula</h4></div>
+          <div class="menu-item"><div class="menu-icon">🍜</div><h4>Semo &amp; Egusi</h4></div>
+        </div>
+      </div>
+
+      <div class="menu-course reveal">
+        <div class="menu-course-title">
+          <span class="rule"></span><h3>Dessert</h3><span class="rule"></span>
+        </div>
+        <div class="menu-grid" style="max-width:420px; margin:0 auto;">
+          <div class="menu-item"><div class="menu-icon">🍫</div><h4>Chocolate Trifle</h4></div>
+          <div class="menu-item"><div class="menu-icon">🍰</div><h4>Cheesecake</h4></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="rsvp" id="rsvp">
     <div class="wrap">
       <div class="section-head">
@@ -679,7 +781,7 @@
 
   /* ---- Active nav link on scroll ---- */
   const navAnchors = document.querySelectorAll('.nav-links a[data-nav]');
-  const sections = ['home','welcome','details','stay','rsvp']
+  const sections = ['home','welcome','details','stay','menu','rsvp']
     .map(id => document.getElementById(id))
     .filter(Boolean);
 
