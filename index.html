@@ -640,6 +640,95 @@
   .form-msg.ok{ color:var(--sage); }
   .form-msg.err{ color:#B0503C; }
 
+
+  .attendance-fields{
+    margin-top:0.25rem;
+    padding:1.25rem;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:rgba(243,234,247,0.55);
+  }
+  .guest-total{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:1rem;
+    margin-top:0.75rem;
+    padding:0.8rem 1rem;
+    border-radius:10px;
+    background:var(--gold-pale);
+    color:var(--ink);
+    font-weight:500;
+  }
+  .privacy-note{
+    font-size:0.82rem;
+    color:var(--ink-soft);
+    margin-top:0.85rem;
+    line-height:1.5;
+  }
+  .consent-row{
+    display:flex;
+    gap:0.65rem;
+    align-items:flex-start;
+    margin-top:1rem;
+    font-size:0.88rem;
+    color:var(--ink-soft);
+  }
+  .consent-row input{ margin-top:0.25rem; }
+  .confirmation-card{
+    display:none;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:1.5rem;
+    margin-top:1.25rem;
+    text-align:left;
+    box-shadow:0 18px 34px -22px rgba(107,31,160,0.35);
+  }
+  .confirmation-card.show{ display:block; }
+  .confirmation-card h3{ color:var(--wine); font-size:1.55rem; margin-bottom:0.6rem; }
+  .confirmation-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:0.75rem;
+    margin:1rem 0;
+  }
+  .confirmation-grid div{
+    background:var(--ivory);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:0.8rem;
+  }
+  .confirmation-grid span{
+    display:block;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:0.2rem;
+  }
+  .confirmation-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.75rem;
+    margin-top:1rem;
+  }
+  .confirmation-actions a{
+    display:inline-flex;
+    text-decoration:none;
+    align-items:center;
+    justify-content:center;
+    padding:0.7rem 1rem;
+    border-radius:999px;
+    border:1px solid var(--wine);
+    color:var(--wine);
+    font-size:0.8rem;
+    font-weight:500;
+  }
+  @media (max-width:480px){
+    .confirmation-grid{ grid-template-columns:1fr; }
+  }
+
   /* ===== FOOTER ===== */
   footer{
     background:var(--paper);
@@ -829,19 +918,22 @@
       <div class="section-head">
         <span class="eyebrow">Kindly Respond</span>
         <h2>Will You Join Us?</h2>
-        <p>Please let us know by [RSVP deadline] so we can plan accordingly.</p>
+        <p>Please respond by Sunday, 18 October 2026 so we can finalise catering and seating.</p>
       </div>
 
       <form class="rsvp-form reveal" id="rsvpForm" name="rsvp" method="POST" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="rsvp">
+        <input type="hidden" id="guests" name="guests" value="1">
+        <input type="hidden" id="reservation_reference" name="reservation_reference">
         <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
+
         <div class="row2">
           <div class="field">
             <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" required placeholder="Your name">
+            <input type="text" id="name" name="name" required autocomplete="name" placeholder="Your full name">
           </div>
           <div class="field">
-            <label for="attending">Attending?</label>
+            <label for="attending">Will you attend?</label>
             <select id="attending" name="attending" required>
               <option value="">Select</option>
               <option value="Yes">Yes, with pleasure</option>
@@ -849,22 +941,81 @@
             </select>
           </div>
         </div>
-        <div class="row2">
-          <div class="field">
-            <label for="guests">Number of Guests (incl. you)</label>
-            <input type="number" id="guests" name="guests" min="1" max="10" value="1" required>
+
+        <div class="field">
+          <label for="phone">Phone number</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="For event updates">
+        </div>
+
+        <div class="attendance-fields" id="attendanceFields">
+          <div class="row2">
+            <div class="field">
+              <label for="adults">Adults</label>
+              <input type="number" id="adults" name="adults" min="1" max="10" value="1">
+            </div>
+            <div class="field">
+              <label for="children">Children</label>
+              <input type="number" id="children" name="children" min="0" max="10" value="0">
+            </div>
           </div>
-          <div class="field">
-            <label for="phone">Phone (optional)</label>
-            <input type="tel" id="phone" name="phone" placeholder="For updates">
+
+          <div class="guest-total">
+            <span>Total expected guests</span>
+            <strong id="guestTotalDisplay">1</strong>
+          </div>
+
+          <div class="field" style="margin-top:1.2rem;">
+            <label for="guest_names">Names of accompanying guests (optional)</label>
+            <textarea id="guest_names" name="guest_names" placeholder="Enter each name on a separate line"></textarea>
+          </div>
+
+          <div class="row2">
+            <div class="field">
+              <label for="dietary_requirement">Dietary requirement</label>
+              <select id="dietary_requirement" name="dietary_requirement">
+                <option value="None">None</option>
+                <option value="Vegetarian">Vegetarian</option>
+                <option value="Vegan">Vegan</option>
+                <option value="Halal">Halal</option>
+                <option value="Food allergy">Food allergy</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="dietary_details">Dietary details (optional)</label>
+              <input type="text" id="dietary_details" name="dietary_details" placeholder="Allergy or special request">
+            </div>
           </div>
         </div>
-        <div class="field">
+
+        <div class="field" style="margin-top:1.2rem;">
           <label for="message">Message for the family (optional)</label>
           <textarea id="message" name="message" placeholder="Leave a note or well-wish..."></textarea>
         </div>
+
+        <label class="consent-row">
+          <input type="checkbox" id="privacy_consent" name="privacy_consent" value="Yes" required>
+          <span>I understand that my details will only be used to manage attendance and event communication.</span>
+        </label>
+        <p class="privacy-note">Your information will not be published on the website.</p>
+
         <button type="submit" class="btn" id="submitBtn">Send RSVP</button>
         <div class="form-msg" id="formMsg"></div>
+
+        <div class="confirmation-card" id="confirmationCard" aria-live="polite">
+          <h3 id="confirmationTitle">RSVP received</h3>
+          <p id="confirmationText"></p>
+          <div class="confirmation-grid">
+            <div><span>Reference</span><strong id="confirmationReference"></strong></div>
+            <div><span>Attendance</span><strong id="confirmationAttendance"></strong></div>
+            <div><span>Guests</span><strong id="confirmationGuests"></strong></div>
+            <div><span>Event</span><strong>25 October 2026, 12:00 PM</strong></div>
+          </div>
+          <div class="confirmation-actions">
+            <a href="#" id="confirmationCalendar">Add to calendar</a>
+            <a href="#" id="confirmationWhatsApp" target="_blank" rel="noopener">Confirm on WhatsApp</a>
+          </div>
+        </div>
       </form>
     </div>
   </section>
@@ -1083,6 +1234,14 @@
   const form = document.getElementById('rsvpForm');
   const msg = document.getElementById('formMsg');
   const btn = document.getElementById('submitBtn');
+  const attendingSelect = document.getElementById('attending');
+  const attendanceFields = document.getElementById('attendanceFields');
+  const adultsInput = document.getElementById('adults');
+  const childrenInput = document.getElementById('children');
+  const guestsInput = document.getElementById('guests');
+  const guestTotalDisplay = document.getElementById('guestTotalDisplay');
+  const referenceInput = document.getElementById('reservation_reference');
+  const confirmationCard = document.getElementById('confirmationCard');
 
   function encode(data) {
     return Object.keys(data)
@@ -1090,11 +1249,49 @@
       .join("&");
   }
 
+  function makeReference(){
+    const stamp = new Date().toISOString().slice(2,10).replace(/-/g,'');
+    const code = Math.random().toString(36).slice(2,7).toUpperCase();
+    return `ADF-${stamp}-${code}`;
+  }
+
+  function updateGuestTotal(){
+    const attending = attendingSelect.value;
+    const adults = Math.max(0, Number(adultsInput.value || 0));
+    const children = Math.max(0, Number(childrenInput.value || 0));
+    const total = attending === 'No' ? 0 : adults + children;
+    guestsInput.value = total;
+    guestTotalDisplay.textContent = total;
+  }
+
+  function updateAttendanceFields(){
+    const declined = attendingSelect.value === 'No';
+    attendanceFields.style.display = declined ? 'none' : 'block';
+    adultsInput.required = !declined;
+    if(declined){
+      adultsInput.value = 0;
+      childrenInput.value = 0;
+    }else if(Number(adultsInput.value) < 1){
+      adultsInput.value = 1;
+    }
+    updateGuestTotal();
+  }
+
+  attendingSelect.addEventListener('change', updateAttendanceFields);
+  adultsInput.addEventListener('input', updateGuestTotal);
+  childrenInput.addEventListener('input', updateGuestTotal);
+  updateAttendanceFields();
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     btn.disabled = true;
     btn.textContent = 'Sending...';
     msg.className = 'form-msg';
+    confirmationCard.classList.remove('show');
+
+    const reference = makeReference();
+    referenceInput.value = reference;
+    updateGuestTotal();
 
     const formData = new FormData(form);
     const attending = formData.get('attending');
@@ -1109,24 +1306,46 @@
       });
 
       if(response.ok){
-        msg.textContent = attending === 'Yes'
-          ? "Thank you — we look forward to celebrating with you."
-          : "Thank you for letting us know. You'll be missed.";
+        const totalGuests = Number(payload.guests || 0);
+        msg.textContent = "Thank you. Your RSVP has been recorded.";
         msg.classList.add('show','ok');
+
+        document.getElementById('confirmationTitle').textContent =
+          attending === 'Yes' ? 'We look forward to celebrating with you' : 'Thank you for letting us know';
+        document.getElementById('confirmationText').textContent =
+          attending === 'Yes'
+            ? 'Please keep your reservation reference for any updates or check-in enquiries.'
+            : 'You will be missed, and we appreciate your response.';
+        document.getElementById('confirmationReference').textContent = reference;
+        document.getElementById('confirmationAttendance').textContent = attending === 'Yes' ? 'Attending' : 'Not attending';
+        document.getElementById('confirmationGuests').textContent = attending === 'Yes' ? `${totalGuests}` : '0';
+        document.getElementById('confirmationCalendar').href = document.getElementById('calGoogle').href;
+
+        const whatsappText = encodeURIComponent(
+          `Hello, I have submitted my RSVP for the Adelakun Family Naming Ceremony. Reference: ${reference}. Attendance: ${attending}. Guests: ${totalGuests}.`
+        );
+        document.getElementById('confirmationWhatsApp').href = `https://wa.me/?text=${whatsappText}`;
+
+        confirmationCard.classList.add('show');
         if(attending === 'Yes') launchConfetti();
+
         form.reset();
-        document.getElementById('guests').value = 1;
+        adultsInput.value = 1;
+        childrenInput.value = 0;
+        guestsInput.value = 1;
+        updateAttendanceFields();
       } else {
         throw new Error('submission failed');
       }
     }catch(err){
-      msg.textContent = "Something went wrong sending your RSVP. Please try again.";
+      msg.textContent = "Something went wrong sending your RSVP. Please check your connection and try again.";
       msg.classList.add('show','err');
     }finally{
       btn.disabled = false;
       btn.textContent = 'Send RSVP';
     }
   });
+
 </script>
 
 </body>
