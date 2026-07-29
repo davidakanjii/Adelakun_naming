@@ -1024,9 +1024,13 @@
             <div><span>Guests</span><strong id="confirmationGuests"></strong></div>
             <div><span>Event</span><strong>25 October 2026, 12:00 PM</strong></div>
           </div>
+          <div class="qr-pass" id="qrPass" hidden>
+            <div id="guestQr" aria-label="Reservation QR code"></div>
+            <p>Present this QR pass at the entrance for check-in.</p>
+          </div>
           <div class="confirmation-actions">
             <a href="#" id="confirmationCalendar">Add to calendar</a>
-            <a href="#" id="downloadQr">Save QR pass</a>
+            <a href="#" id="downloadQr" hidden>Save QR pass</a>
             <a href="#" id="confirmationWhatsApp" target="_blank" rel="noopener">Confirm on WhatsApp</a>
           </div>
         </div>
@@ -1344,8 +1348,10 @@
         document.getElementById('confirmationWhatsApp').href = `https://wa.me/?text=${whatsappText}`;
 
         guestQr.innerHTML = '';
-        qrPass.hidden = attending !== 'Yes';
-        if(attending === 'Yes' && window.QRCode){
+        const shouldShowQr = attending === 'Yes' && Boolean(window.QRCode);
+        qrPass.hidden = !shouldShowQr;
+        downloadQr.hidden = !shouldShowQr;
+        if(shouldShowQr){
           const qrPayload = `ADEL-ACT|${reference}`;
           new QRCode(guestQr, { text: qrPayload, width: 190, height: 190, correctLevel: QRCode.CorrectLevel.H });
           downloadQr.onclick = (event) => {
@@ -1372,6 +1378,7 @@
         throw new Error('submission failed');
       }
     }catch(err){
+      console.error('RSVP submission error:', err);
       msg.textContent = "Something went wrong sending your RSVP. Please check your connection and try again.";
       msg.classList.add('show','err');
     }finally{
