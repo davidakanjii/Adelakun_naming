@@ -31,6 +31,7 @@
   }
 
   *{box-sizing:border-box; margin:0; padding:0;}
+  *[hidden]{display:none!important;}
 
   body{
     font-family:'Jost', sans-serif;
@@ -758,7 +759,7 @@
     .menu-item{ opacity:1; transform:none; }
   }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07c1QirORfV9sKSxlwDgWFJKBwF7ILQwlq1c0UTdROx4R8xgXhRp3VQkqk3Xg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -1354,15 +1355,34 @@
         if(shouldShowQr){
           const qrPayload = `ADEL-ACT|${reference}`;
           new QRCode(guestQr, { text: qrPayload, width: 190, height: 190, correctLevel: QRCode.CorrectLevel.H });
-          downloadQr.onclick = (event) => {
+          downloadQr.onclick = async (event) => {
             event.preventDefault();
-            const image = guestQr.querySelector('img') || guestQr.querySelector('canvas');
-            if(!image) return;
-            const url = image.tagName === 'CANVAS' ? image.toDataURL('image/png') : image.src;
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${reference}-qr-pass.png`;
-            a.click();
+
+            // qrcode.js may render either a canvas or an image. Wait briefly for it to finish.
+            await new Promise(resolve => setTimeout(resolve, 150));
+
+            const canvas = guestQr.querySelector('canvas');
+            const image = guestQr.querySelector('img');
+            let url = '';
+
+            if(canvas){
+              url = canvas.toDataURL('image/png');
+            }else if(image && image.src){
+              url = image.src;
+            }
+
+            if(!url){
+              alert('The QR pass is still being prepared. Please try again in a moment.');
+              return;
+            }
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${reference}-qr-pass.png`;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
           };
         }
 
