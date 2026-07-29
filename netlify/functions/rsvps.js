@@ -1,6 +1,6 @@
 const NETLIFY_API = 'https://api.netlify.com/api/v1';
 function json(statusCode, body){return {statusCode,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'},body:JSON.stringify(body)}}
-async function checkinStore(){const {getStore}=await import('@netlify/blobs');return getStore({name:'adelakun-checkins',consistency:'strong'})}
+async function checkinStore(){const {getStore}=await import('@netlify/blobs');return getStore('adelakun-checkins',{siteID:process.env.NETLIFY_SITE_ID,token:process.env.NETLIFY_ACCESS_TOKEN})}
 exports.handler=async(event)=>{
  const supplied=event.headers['x-admin-password']||'',expected=process.env.ADMIN_DASHBOARD_PASSWORD;
  if(!expected||supplied!==expected)return json(401,{error:'Unauthorised'});
@@ -12,7 +12,7 @@ exports.handler=async(event)=>{
    if(!response.ok){console.error(await response.text());return json(502,{error:'Could not retrieve RSVP submissions from Netlify.'})}
    const submissions=await response.json();
    const store=await checkinStore();
-   const rsvps=await Promise.all(submissions.filter(x=>String(x.form_name||x.data?.['form-name']||'').toLowerCase()==='rsvp').map(async x=>{const d=x.data||{};const legacyGuests=Number(d.guests||0);const hasBreakdown=d.adults!==undefined||d.children!==undefined;const adults=hasBreakdown?Number(d.adults||0):legacyGuests;const children=hasBreakdown?Number(d.children||0):0;const guests=hasBreakdown?adults+children:legacyGuests;const check=await store.get(`submission-${x.id}`,{type:'json',consistency:'strong'}).catch(()=>null);return{id:x.id,createdAt:x.created_at,name:d.name||'',attending:d.attending||'',adults,children,guests,phone:d.phone||'',guestNames:d.guest_names||'',dietaryRequirement:d.dietary_requirement||'None',dietaryDetails:d.dietary_details||'',message:d.message||'',reference:d.reservation_reference||'',privacyConsent:d.privacy_consent||'',checkedIn:!!check?.checkedIn,checkedInAt:check?.checkedInAt||null,checkinSource:check?.source||null}}));
+   const rsvps=await Promise.all(submissions.filter(x=>String(x.form_name||x.data?.['form-name']||'').toLowerCase()==='rsvp').map(async x=>{const d=x.data||{};const legacyGuests=Number(d.guests||0);const hasBreakdown=d.adults!==undefined||d.children!==undefined;const adults=hasBreakdown?Number(d.adults||0):legacyGuests;const children=hasBreakdown?Number(d.children||0):0;const guests=hasBreakdown?adults+children:legacyGuests;const check=await store.get(`submission-${x.id}`,{type:'json'}).catch(()=>null);return{id:x.id,createdAt:x.created_at,name:d.name||'',attending:d.attending||'',adults,children,guests,phone:d.phone||'',guestNames:d.guest_names||'',dietaryRequirement:d.dietary_requirement||'None',dietaryDetails:d.dietary_details||'',message:d.message||'',reference:d.reservation_reference||'',privacyConsent:d.privacy_consent||'',checkedIn:!!check?.checkedIn,checkedInAt:check?.checkedInAt||null,checkinSource:check?.source||null}}));
    rsvps.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));return json(200,{submissions:rsvps});
   }
   if(event.httpMethod==='POST'){
