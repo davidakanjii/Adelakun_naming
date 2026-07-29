@@ -713,6 +713,18 @@
     gap:0.75rem;
     margin-top:1rem;
   }
+  .qr-pass{
+    margin:1.3rem auto 0;
+    padding:1rem;
+    max-width:260px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    text-align:center;
+  }
+  .qr-pass p{font-size:.82rem;color:var(--ink-soft);margin:.6rem 0 0;}
+  #guestQr{display:flex;justify-content:center;}
+  #guestQr img,#guestQr canvas{max-width:190px;height:auto!important;}
   .confirmation-actions a{
     display:inline-flex;
     text-decoration:none;
@@ -746,6 +758,7 @@
     .menu-item{ opacity:1; transform:none; }
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07c1QirORfV9sKSxlwDgWFJKBwF7ILQwlq1c0UTdROx4R8xgXhRp3VQkqk3Xg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
 
@@ -1013,6 +1026,7 @@
           </div>
           <div class="confirmation-actions">
             <a href="#" id="confirmationCalendar">Add to calendar</a>
+            <a href="#" id="downloadQr">Save QR pass</a>
             <a href="#" id="confirmationWhatsApp" target="_blank" rel="noopener">Confirm on WhatsApp</a>
           </div>
         </div>
@@ -1242,6 +1256,9 @@
   const guestTotalDisplay = document.getElementById('guestTotalDisplay');
   const referenceInput = document.getElementById('reservation_reference');
   const confirmationCard = document.getElementById('confirmationCard');
+  const qrPass = document.getElementById('qrPass');
+  const guestQr = document.getElementById('guestQr');
+  const downloadQr = document.getElementById('downloadQr');
 
   function encode(data) {
     return Object.keys(data)
@@ -1325,6 +1342,23 @@
           `Hello, I have submitted my RSVP for the Adelakun Family Naming Ceremony. Reference: ${reference}. Attendance: ${attending}. Guests: ${totalGuests}.`
         );
         document.getElementById('confirmationWhatsApp').href = `https://wa.me/?text=${whatsappText}`;
+
+        guestQr.innerHTML = '';
+        qrPass.hidden = attending !== 'Yes';
+        if(attending === 'Yes' && window.QRCode){
+          const qrPayload = `ADEL-ACT|${reference}`;
+          new QRCode(guestQr, { text: qrPayload, width: 190, height: 190, correctLevel: QRCode.CorrectLevel.H });
+          downloadQr.onclick = (event) => {
+            event.preventDefault();
+            const image = guestQr.querySelector('img') || guestQr.querySelector('canvas');
+            if(!image) return;
+            const url = image.tagName === 'CANVAS' ? image.toDataURL('image/png') : image.src;
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${reference}-qr-pass.png`;
+            a.click();
+          };
+        }
 
         confirmationCard.classList.add('show');
         if(attending === 'Yes') launchConfetti();
