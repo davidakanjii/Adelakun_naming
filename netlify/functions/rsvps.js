@@ -10,7 +10,7 @@ exports.handler=async(event)=>{
    const response=await fetch(`${NETLIFY_API}/sites/${encodeURIComponent(siteId)}/submissions?per_page=1000`,{headers:{Authorization:`Bearer ${token}`,Accept:'application/json'}});
    if(!response.ok){console.error(await response.text());return json(502,{error:'Could not retrieve RSVP submissions from Netlify.'})}
    const submissions=await response.json();
-   const rsvps=submissions.filter(x=>String(x.form_name||x.data?.['form-name']||'').toLowerCase()==='rsvp').map(x=>{const d=x.data||{};return{id:x.id,createdAt:x.created_at,name:d.name||'',attending:d.attending||'',guests:Number(d.guests||0),phone:d.phone||'',message:d.message||''}}).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+   const rsvps=submissions.filter(x=>String(x.form_name||x.data?.['form-name']||'').toLowerCase()==='rsvp').map(x=>{const d=x.data||{};const legacyGuests=Number(d.guests||0);const hasBreakdown=d.adults!==undefined||d.children!==undefined;const adults=hasBreakdown?Number(d.adults||0):legacyGuests;const children=hasBreakdown?Number(d.children||0):0;const guests=hasBreakdown?adults+children:legacyGuests;return{id:x.id,createdAt:x.created_at,name:d.name||'',attending:d.attending||'',adults,children,guests,phone:d.phone||'',guestNames:d.guest_names||'',dietaryRequirement:d.dietary_requirement||'None',dietaryDetails:d.dietary_details||'',message:d.message||'',reference:d.reservation_reference||'',privacyConsent:d.privacy_consent||''}}).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
    return json(200,{submissions:rsvps});
   }
   if(event.httpMethod==='DELETE'){
