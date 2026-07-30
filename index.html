@@ -7,7 +7,7 @@
 
 <!-- Open Graph / share preview -->
 <meta property="og:title" content="The Adelakun Family — Naming Ceremony" />
-<meta property="og:description" content="Join us on Sunday 25 October 2026 in Scarborough as we celebrate and give our baby his name." />
+<meta property="og:description" content="Join us on Sunday 25 October 2026<br><span>Dress Code: Touch of White</span> in Scarborough as we celebrate and give our baby his name." />
 <meta property="og:type" content="website" />
 <meta property="og:image" content="https://images.unsplash.com/photo-1519689680058-324335c77eba?w=1200&h=630&fit=crop" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -1324,7 +1324,7 @@
       const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encode(payload)
+        body: new URLSearchParams(payload).toString()
       });
 
       if(response.ok){
