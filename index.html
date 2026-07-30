@@ -777,6 +777,7 @@
         <li><a href="#details" data-nav="details">Details</a></li>
         <li><a href="#stay" data-nav="stay">Stay</a></li>
         <li><a href="#menu" data-nav="menu">Menu</a></li>
+        <li><a href="#dress-code" data-nav="dress-code">Dress Code</a></li>
         <li><a href="#rsvp" class="nav-cta" data-nav="rsvp">RSVP</a></li>
       </ul>
     </div>
@@ -927,6 +928,21 @@
     </div>
   </section>
 
+
+  <section class="dress-code" id="dress-code">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Celebration Style</span>
+        <h2>Dress Code</h2>
+        <p>We would love our guests to celebrate this special occasion with us.</p>
+      </div>
+      <div class="welcome-inner reveal">
+        <p><strong>Touch of White</strong></p>
+        <p>A touch of white in your outfit will make the celebration even more special as we gather to give our baby his name.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="rsvp" id="rsvp">
     <div class="wrap">
       <div class="section-head">
@@ -1068,7 +1084,7 @@
 
   /* ---- Active nav link on scroll ---- */
   const navAnchors = document.querySelectorAll('.nav-links a[data-nav]');
-  const sections = ['home','welcome','details','stay','menu','rsvp']
+  const sections = ['home','welcome','details','stay','menu','dress-code','rsvp']
     .map(id => document.getElementById(id))
     .filter(Boolean);
 
