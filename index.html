@@ -377,6 +377,57 @@
   .section-head h2{ font-size:clamp(1.9rem, 4.5vw, 2.5rem); font-weight:400; color:var(--ink); }
   .section-head p{ margin-top:1rem; color:var(--ink-soft); font-size:1rem; }
 
+
+  /* ===== BABY NAME ===== */
+  .baby-name{
+    background:radial-gradient(circle at top, rgba(232,185,35,0.15), transparent 45%), var(--paper);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .name-frame{
+    max-width:600px;
+    margin:0 auto;
+    padding:3rem 2rem;
+    text-align:center;
+    background:linear-gradient(145deg,#fffaf0,#f8edf8);
+    border:2px solid var(--gold);
+    border-radius:24px;
+    position:relative;
+    box-shadow:0 20px 45px -25px rgba(107,31,160,.5);
+  }
+  .name-frame:before,.name-frame:after{
+    content:"✦";
+    position:absolute;
+    color:var(--gold);
+    font-size:2rem;
+  }
+  .name-frame:before{top:20px;left:25px}
+  .name-frame:after{bottom:20px;right:25px}
+  .baby-name-title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:2.2rem;
+    color:var(--wine);
+  }
+  .baby-name-sub{
+    color:var(--ink-soft);
+    font-style:italic;
+    margin:1rem 0 2rem;
+  }
+  .name-list{display:flex;flex-direction:column;gap:.9rem}
+  .name-item{
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.5rem;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .name-divider{
+    width:70px;
+    height:1px;
+    background:var(--gold);
+    margin:auto;
+  }
+
+
   /* ===== WELCOME ===== */
   .welcome{ background:var(--ivory); }
   .welcome-inner{ text-align:center; max-width:560px; margin:0 auto; }
@@ -774,6 +825,7 @@
       <ul class="nav-links" id="navLinks">
         <li><a href="#home" data-nav="home">Home</a></li>
         <li><a href="#welcome" data-nav="welcome">Welcome</a></li>
+         <li><a href="#baby-name" data-nav="baby-name">Baby's Names</a></li>
         <li><a href="#details" data-nav="details">Details</a></li>
         <li><a href="#stay" data-nav="stay">Stay</a></li>
         <li><a href="#menu" data-nav="menu">Menu</a></li>
@@ -840,6 +892,32 @@
         <p>We welcomed a new addition to our family, and we would love for you to join us as we celebrate and give our baby his name.</p>
         <p>Your presence would mean the world to us.</p>
         <span class="signature">The Adelakun Family</span>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="baby-name" id="baby-name">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">A Blessing And A Legacy</span>
+        <h2>The Names We Give</h2>
+        <p>With gratitude and joy, we introduce the beautiful names chosen for our little one.</p>
+      </div>
+
+      <div class="name-frame reveal">
+        <h3 class="baby-name-title">Hamza Adelakun</h3>
+        <p class="baby-name-sub">Our precious gift, celebrated with love and gratitude</p>
+
+        <div class="name-list">
+          <div class="name-item">Akintade Adekilekun</div>
+          <div class="name-divider"></div>
+          <div class="name-item">Ademakinwa Oladipupo</div>
+          <div class="name-divider"></div>
+          <div class="name-item">Olaseeni Afolarin</div>
+          <div class="name-divider"></div>
+          <div class="name-item">Akanbi</div>
+        </div>
       </div>
     </div>
   </section>
@@ -1097,7 +1175,7 @@
 
   /* ---- Active nav link on scroll ---- */
   const navAnchors = document.querySelectorAll('.nav-links a[data-nav]');
-  const sections = ['home','welcome','details','stay','menu','dress-code','rsvp']
+  const sections = ['home','welcome','baby-name','details','stay','menu','dress-code','rsvp']
     .map(id => document.getElementById(id))
     .filter(Boolean);
 
